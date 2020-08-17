@@ -1,7 +1,9 @@
 import React from 'react';
-import './App.css';
 import io from 'socket.io-client';
 import AptE, { zones as aptEZones } from './floorplans/AptE';
+import Layout from './Layout';
+
+const titles = ['floor plan', 'timeline'];
 
 const initialState = Object
       .values(aptEZones)
@@ -13,20 +15,26 @@ function App() {
   React.useEffect(() => {
     const socket = io('http://localhost:8000');
     socket.on('change', (msg) => {
-      console.log('message: ' + msg);
+      console.debug('message: ', JSON.stringify(msg));
       updateZones({...zones, [msg.key]: msg.value });
     });
   });
 
   return (
-    <div className="App">
-      <AptE
-        kitchen={zones[aptEZones.kitchen]}
-        bedroom={zones[aptEZones.bedroom]}
-        bathroom={zones[aptEZones.bathroom]}
-        livingroom={zones[aptEZones.livingroom]}
-      />
-    </div>
+    <Layout
+      titles={titles}
+      views={[
+        <div className="App">
+          <AptE
+            kitchen={zones[aptEZones.kitchen]}
+            bedroom={zones[aptEZones.bedroom]}
+            bathroom={zones[aptEZones.bathroom]}
+            livingroom={zones[aptEZones.livingroom]}
+          />
+        </div>,
+        <div>view</div>
+      ]}
+    />
   );
 }
 

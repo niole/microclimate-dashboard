@@ -7,6 +7,8 @@ const port = 8000
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+const EVENTS_FILE_PATH = path.resolve(__dirname, './data/events.json');
+
 let mountedSocket;
 
 io.on('connection', (socket) => {
@@ -25,7 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/events', (req, res) => {
-  fs.readFile('./data/events.json', 'utf8', (err, data) => {
+  fs.readFile(EVENTS_FILE_PATH, 'utf8', (err, data) => {
     if (err) {
       throw err;
     } else {
@@ -38,7 +40,7 @@ app.get('/events', (req, res) => {
 app.post('/', (req, res) => {
     const { body } = req;
     const formattedEvent = `${JSON.stringify(body)}\n`;
-    fs.appendFile('./data/events.json', formattedEvent, function (err) {
+    fs.appendFile(EVENTS_FILE_PATH, formattedEvent, function (err) {
       if (err) {
         console.error('Failed to save event', body, err);
       } else {

@@ -2,9 +2,10 @@ import React from 'react';
 
 const Layout = ({
   titles,
-  views,
+  children,
 }) => {
   const [index, setIndex] = React.useState(0);
+  const views = children;
   return (
     <div>
       <div>

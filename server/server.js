@@ -1,4 +1,5 @@
 const express = require('express')
+const fs = require('fs');
 const path = require('path');
 
 const app = express()
@@ -16,17 +17,35 @@ app.use(express.json({
     strict: false
 }));
 
-app.use(
-  express.static(path.resolve(__dirname, '../build'))
-);
+app.use('/', express.static(path.resolve(__dirname, '../build')));
+app.use('/data', express.static(path.resolve(__dirname, './data')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, './index.html'));
-})
+});
+
+app.get('/events', (req, res) => {
+  fs.readFile('./data/events.json', 'utf8', (err, data) => {
+    if (err) {
+      throw err;
+    } else {
+      const parsedEvents = data.split('\n').filter(d => !!d).map(d => JSON.parse(d));
+      res.send(parsedEvents);
+    }
+  });
+});
 
 app.post('/', (req, res) => {
     const { body } = req;
-    console.log(body);
+    const formattedEvent = `${JSON.stringify(body)}\n`;
+    fs.appendFile('./data/events.json', formattedEvent, function (err) {
+      if (err) {
+        console.error('Failed to save event', body, err);
+      } else {
+        console.info(`Saved event : ${body}`);
+      }
+    });
+
     if (mountedSocket) {
         mountedSocket.emit('change', body);
     } else {

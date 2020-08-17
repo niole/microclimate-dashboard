@@ -19,7 +19,8 @@ Open localhost:8000
 ```
 {
  "key": <micro-climate-id-string>,
- "value": <temperature-integer>
+ "value": <temperature-integer>,
+ "createdAt": <ms>
 }
 ```
 

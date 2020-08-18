@@ -4,10 +4,12 @@ import useClimateEvents from './hooks/useClimateEvents';
 import Layout from './Layout';
 import Timeline from './Timeline';
 
+const FLOOR_PLAN_NAME = 'apte';
+
 const titles = ['floor plan', 'timeline'];
 
 function App() {
-  const [events, zones] = useClimateEvents('apte');
+  const [events, zones] = useClimateEvents(FLOOR_PLAN_NAME);
   return (
     <Layout
       titles={titles}

@@ -1,13 +1,12 @@
 const express = require('express')
-const fs = require('fs');
 const path = require('path');
+const db = require('./infrastructure/database');
+const Event = require('./domain/Event');
 
 const app = express()
 const port = 8000
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-
-const EVENTS_FILE_PATH = path.resolve(__dirname, './data/events.json');
 
 let mountedSocket;
 
@@ -20,40 +19,35 @@ app.use(express.json({
 }));
 
 app.use('/', express.static(path.resolve(__dirname, '../build')));
-app.use('/data', express.static(path.resolve(__dirname, './data')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, './index.html'));
 });
 
 app.get('/events', (req, res) => {
-  fs.readFile(EVENTS_FILE_PATH, 'utf8', (err, data) => {
-    if (err) {
-      throw err;
-    } else {
-      const parsedEvents = data.split('\n').filter(d => !!d).map(d => JSON.parse(d));
-      res.send(parsedEvents);
-    }
-  });
+  db
+    .then(() => Event.find())
+    .then(allEvents => res.send(allEvents))
+    .catch(error => console.error('Failed to get all events', error));
 });
 
 app.post('/', (req, res) => {
-    const { body } = req;
-    const formattedEvent = `${JSON.stringify(body)}\n`;
-    fs.appendFile(EVENTS_FILE_PATH, formattedEvent, function (err) {
-      if (err) {
-        console.error('Failed to save event', body, err);
-      } else {
-        console.info(`Saved event : ${body}`);
-      }
-    });
+  const { body } = req;
 
-    if (mountedSocket) {
-        mountedSocket.emit('change', body);
-    } else {
-        console.error("No users connected");
-    }
-    res.send(200);
+  db
+    .then(() => new Event(body).save())
+    .then(() => {
+      if (mountedSocket) {
+          mountedSocket.emit('change', body);
+      } else {
+          console.error("No users connected");
+      }
+      res.sendStatus(200);
+    })
+    .catch(error => {
+      console.error('Failed to save new event', error);
+      res.sendStatus(500);
+    });
 })
 
 http.listen(port, () => {

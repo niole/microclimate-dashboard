@@ -1,7 +1,9 @@
 const express = require('express')
 const path = require('path');
+const eventsRoutes = require('./routes/events');
 const db = require('./infrastructure/database');
 const Event = require('./domain/Event');
+const FloorPlan = require('./domain/FloorPlan');
 
 const app = express()
 const port = 8000
@@ -20,22 +22,33 @@ app.use(express.json({
 
 app.use('/', express.static(path.resolve(__dirname, '../build')));
 
+app.use('/events', eventsRoutes);
+
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, './index.html'));
 });
 
-app.get('/events', (req, res) => {
-  db
-    .then(() => Event.find())
-    .then(allEvents => res.send(allEvents))
-    .catch(error => console.error('Failed to get all events', error));
-});
-
-app.post('/', (req, res) => {
+app.post('/floorplan/:name', (req, res) => {
+  const { name } = req.params;
   const { body } = req;
 
   db
-    .then(() => new Event(body).save())
+    .then(() => FloorPlan.findOne({ floorPlanName: name }))
+    .then(foundFloorPlan => {
+      if (!foundFloorPlan) {
+        return Promise.reject(`Floor plan ${name} doesn't exist`);
+      } else if (!foundFloorPlan.roomNames.find(roomName => roomName === body.key)) {
+        return Promise.reject('Event type not valid');
+      }
+      return foundFloorPlan;
+    })
+    .then(() => new Event({
+        roomName: body.key,
+        temperature: body.value,
+        floorPlanName: name,
+        createdAt: body.createdAt
+      }).save()
+    )
     .then(() => {
       if (mountedSocket) {
           mountedSocket.emit('change', body);
@@ -45,7 +58,7 @@ app.post('/', (req, res) => {
       res.sendStatus(200);
     })
     .catch(error => {
-      console.error('Failed to save new event', error);
+      console.error('Failed to save new event. error: ', error);
       res.sendStatus(500);
     });
 })

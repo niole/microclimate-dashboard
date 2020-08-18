@@ -6,12 +6,8 @@ import Timeline from './Timeline';
 
 const titles = ['floor plan', 'timeline'];
 
-const initialState = Object
-      .values(aptEZones)
-      .reduce((acc, next) => ({ ...acc, [next]: 0 }), {});
-
 function App() {
-  const [events, zones] = useClimateEvents(initialState);
+  const [events, zones] = useClimateEvents('apte');
   return (
     <Layout
       titles={titles}

@@ -10,8 +10,8 @@ const formatCreatedAt = createdAt => {
 const Timeline = ({
   events,
 }) => {
-  const formattedEvents = events.map(({ key, value, createdAt }) => ({
-      [key]: value,
+  const formattedEvents = events.map(({ roomName, temperature, createdAt }) => ({
+      [roomName]: temperature,
       createdAt: formatCreatedAt(createdAt),
   }));
   return (

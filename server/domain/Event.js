@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  key: String,
-  value: Number,
+  roomName: String,
+  temperature: Number,
+  floorPlanName: String,
   createdAt: {
     type: Number,
     min: 0

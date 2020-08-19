@@ -9,6 +9,6 @@ services:
     links:
     - db
   db:
-    image: "mongo:latest"
+    image: "mongo:4.4.0"
 volumes:
   logvolume01: {}

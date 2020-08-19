@@ -18,8 +18,4 @@ COPY ./package.json .
 
 RUN npm i && npm run build && cd server && npm i
 
-ENTRYPOINT PORT=$PORT \
-    NODE_ENV="production" \
-    SECRET_LOCATION="/etc/ssl/certs" \
-    KEY_PAIR_PASS=$KEY_PAIR_PASS \
-    node server/server.js
+ENTRYPOINT node server/server.js

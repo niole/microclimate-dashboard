@@ -56,29 +56,17 @@ localhost:8000/floorplan/apte
 
 ## start web app in prod
 
-1.
-create openssl key and cert for DOMAIN. Store at SECRET_LOCATION. Must be named key.pem and cert.pem.
+1. Create openssl key and cert for DOMAIN. Store at SECRET_LOCATION. Must be named key.pem and cert.pem.
 
-2. build the image
-```sh
-cd heatmap-dashboard && docker build -t heatmap-dashboard .
-docker tag <image-id> <dockeruser>/heatmap-dashboard:<build-number>
-docker push <dockeruser>/heatmap-dashboard:<build-number>
-```
+2. Ensure that init.js file seeds the right floorplan.
 
-3. setup mongo as mentioned above
-
-4. run the image
+3. Run `docker-compose`
 
 ```sh
-docker run \
--p 80:8000 \
-<dockeruser>/heatmap-dashboard:<build-number> \
--e PORT=8000 \
--e KEY_PAIR_PASS="test"
+docker-compose up -d
 ```
 
-# TODO docker containers are not talking to each other
+4. Look at `https://DOMAIN:80`
 
 # Send Events To UI in prod
 

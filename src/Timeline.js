@@ -28,7 +28,7 @@ const Timeline = ({
       <YAxis/>
       <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
       {Object.values(zones).map((zone, i) => (
-        <Line type="monotone" key={zone} dataKey={zone} stroke={colors[i]} />
+        <Line type="monotone" key={zone} dataKey={zone} stroke={colors[i]} dot={false} />
       ))}
     </LineChart>
   );

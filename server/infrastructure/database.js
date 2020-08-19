@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { DB_HOST = 'localhost' } = process.env;
 
 mongoose.connect(
-  `mongodb://${DB_HOST}:27017/test`,
+  `mongodb://${DB_HOST}:27017/climate`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 

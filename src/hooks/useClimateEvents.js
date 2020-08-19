@@ -23,7 +23,7 @@ function useClimateEvents(floorPlanName) {
   }, [zones, prevMessageRef, events, currentMessage]);
 
   React.useEffect(() => {
-    const socket = io('http://localhost:8000');
+    const socket = io('/');
     fetch(`/events/floorplan/${floorPlanName}/last`)
       .then(b => b.json())
       .then(latestEvents => {

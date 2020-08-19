@@ -2,6 +2,13 @@ import React from 'react';
 import { Tooltip, Line, CartesianGrid, XAxis, YAxis, LineChart } from 'recharts';
 import { zones } from './floorplans/AptE';
 
+const colors = [
+  '#8884d8',
+  'magenta',
+  'lime',
+  'cyan'
+];
+
 const formatCreatedAt = createdAt => {
   const date = new Date(createdAt);
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
@@ -20,8 +27,8 @@ const Timeline = ({
       <XAxis dataKey="createdAt"/>
       <YAxis/>
       <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-      {Object.values(zones).map(zone => (
-        <Line type="monotone" key={zone} dataKey={zone} stroke="#8884d8" />
+      {Object.values(zones).map((zone, i) => (
+        <Line type="monotone" key={zone} dataKey={zone} stroke={colors[i]} />
       ))}
     </LineChart>
   );

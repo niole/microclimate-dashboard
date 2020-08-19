@@ -1,13 +1,33 @@
 const express = require('express')
+const fs = require('fs');
 const path = require('path');
 const eventsRoutes = require('./routes/events');
 const db = require('./infrastructure/database');
 const Event = require('./domain/Event');
 const FloorPlan = require('./domain/FloorPlan');
 
+const {
+  NODE_ENV,
+  SECRET_LOCATION,
+  KEY_PAIR_PASS,
+  PORT,
+} = process.env;
+
 const app = express()
-const port = 8000
-const http = require('http').createServer(app);
+let http;
+
+if (NODE_ENV === "production") {
+  console.info("Running app in production");
+  http = require('https').createServer({
+      key: fs.readFileSync(`${SECRET_LOCATION}/key.pem`),
+      cert: fs.readFileSync(`${SECRET_LOCATION}/cert.pem`),
+      passphrase: KEY_PAIR_PASS
+  }, app);
+} else {
+  console.info("Running app in development");
+  http = require('https').createServer(app);
+}
+
 const io = require('socket.io')(http);
 
 let mountedSocket;
@@ -63,6 +83,6 @@ app.post('/floorplan/:name', (req, res) => {
     });
 })
 
-http.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+http.listen(PORT, () => {
+  console.log(`Example app listening at https://localhost:${PORT}`)
 })

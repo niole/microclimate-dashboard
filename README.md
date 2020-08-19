@@ -56,17 +56,19 @@ localhost:8000/floorplan/apte
 
 ## start web app in prod
 
-1. Create openssl key and cert for DOMAIN. Store at SECRET_LOCATION. Must be named key.pem and cert.pem.
+1. Create openssl key and cert for DOMAIN. Store in ./keys/. Must be named key.pem and cert.pem.
 
 2. Ensure that init.js file seeds the right floorplan.
 
-3. Run `docker-compose`
+3. Run `docker-compose up -d`. If you have run this before, you might have to wipe existing docker state by running some combination of the following commands:
 
 ```sh
-docker-compose up -d
+docker-compose stop
+docker rm <webapp-cid> <db-cid>
+docker-compose build
 ```
 
-4. Look at `https://DOMAIN:80`
+4. Look at `https://DOMAIN`
 
 # Send Events To UI in prod
 

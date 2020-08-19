@@ -25,7 +25,7 @@ const Timeline = ({
     <LineChart width={500} height={300} data={formattedEvents}>
       <Tooltip />
       <XAxis dataKey="createdAt"/>
-      <YAxis/>
+      <YAxis type="number" domain={['dataMin', 'dataMax']} />
       <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
       {Object.values(zones).map((zone, i) => (
         <Line type="monotone" key={zone} dataKey={zone} stroke={colors[i]} dot={false} />

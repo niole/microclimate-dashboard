@@ -10,13 +10,30 @@ router.use(function timeLog (req, res, next) {
   next()
 })
 
+router.get('/floorplan/:name/start/:start/end/:end', (req, res) => {
+  const { name, start, end } = req.params;
+  db
+  .then(() => Event.find({
+    floorPlanName: name,
+    createdAt: {
+      "$gte": start,
+      "$lte": end
+    }
+  }).sort({ createdAt: 1 }))
+  .then(events => res.send(events))
+  .catch(error => {
+    console.error('Failed to get events at start time ', start, ', end time ', end, ', error: ', error);
+    res.sendStatus(500);
+  });
+});
+
 /**
   gets all events of all time for a floor plan
 */
 router.get('/floorplan/:name/all', (req, res) => {
   const floorPlanName = req.params.name;
   db
-    .then(() => Event.find({ floorPlanName}))
+    .then(() => Event.find({ floorPlanName}).sort({ createdAt: 1 }))
     .then(allEvents => res.send(allEvents))
     .catch(error => console.error('Failed to get all events', error));
 });

@@ -4,7 +4,7 @@ const Layout = ({
   titles,
   children,
 }) => {
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(1);
   const views = children;
   return (
     <div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
+import { getSearch } from '../utils';
 
 function useClimateEvents(floorPlanName) {
   const prevMessageRef = React.useRef();
@@ -23,6 +24,11 @@ function useClimateEvents(floorPlanName) {
   }, [zones, prevMessageRef, events, currentMessage]);
 
   React.useEffect(() => {
+    const {
+      start = Date.now() - (7*24*60*60*1000),
+      end = Date.now(),
+    } = getSearch();
+
     const socket = io('/');
     fetch(`/events/floorplan/${floorPlanName}/last`)
       .then(b => b.json())
@@ -34,7 +40,7 @@ function useClimateEvents(floorPlanName) {
         updateZones(initialState)
       });
 
-    fetch(`/events/floorplan/${floorPlanName}/all`)
+    fetch(`/events/floorplan/${floorPlanName}/start/${start}/end/${end}`)
       .then(b => b.json())
       .then(setEvents);
 

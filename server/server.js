@@ -25,7 +25,7 @@ if (NODE_ENV === "production") {
   }, app);
 } else {
   console.info("Running app in development");
-  http = require('https').createServer(app);
+  http = require('http').createServer(app);
 }
 
 const io = require('socket.io')(http);

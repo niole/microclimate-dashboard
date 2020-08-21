@@ -10,6 +10,10 @@ const titles = ['floor plan', 'timeline'];
 
 function App() {
   const [events, zones] = useClimateEvents(FLOOR_PLAN_NAME);
+  const groupedEvents = events.reduce((grouped, nextEvent) => ({
+    ...grouped,
+    [nextEvent.key]: [...(grouped[nextEvent.key] || []), nextEvent]
+  }), []);
   return (
     <Layout
       titles={titles}
@@ -20,7 +24,11 @@ function App() {
         bathroom={zones[aptEZones.bathroom]}
         livingroom={zones[aptEZones.livingroom]}
       />
-      <Timeline events={events} />
+      <div>
+        {Object.entries(groupedEvents).map(([eventName, es]) => (
+            <Timeline key={eventName} events={es} />
+        ))}
+      </div>
     </Layout>
   );
 }

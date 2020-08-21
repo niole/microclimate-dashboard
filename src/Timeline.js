@@ -17,12 +17,29 @@ const formatCreatedAt = createdAt => {
 const Timeline = ({
   events,
 }) => {
-  const formattedEvents = events.map(({ roomName, temperature, createdAt }) => ({
-      [roomName]: temperature,
+  const formattedEvents = events
+    .map(({ roomName, temperature, createdAt }) => ({
+      roomName,
+      temperature,
       createdAt: formatCreatedAt(createdAt),
-  }));
+    }));
+  const initialState = formattedEvents.reduce((acc, x) => {
+    acc[x.roomName] = acc[x.roomName] || x.temperature;
+    return acc;
+  }, {});
+  const eventsBySeries = formattedEvents.reduce(([prevTemps, eventsFinal], x) => {
+    const newTemps = {
+      ...prevTemps,
+      [x.roomName]: x.temperature,
+    }
+    const event = {
+      name: x.createdAt,
+      ...newTemps,
+    };
+    return [newTemps, [...eventsFinal, event]];
+  }, [initialState, []])[1];
   return (
-    <LineChart width={500} height={300} data={formattedEvents}>
+    <LineChart width={500} height={300} data={eventsBySeries}>
       <Tooltip />
       <XAxis dataKey="createdAt"/>
       <YAxis type="number" domain={['dataMin', 'dataMax']} />

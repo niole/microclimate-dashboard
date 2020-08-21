@@ -53,14 +53,6 @@ app.post('/floorplan/:name', (req, res) => {
   const { body } = req;
 
   db
-    .then(() =>
-      body.value === 32 ?
-      Promise.reject(`We don't do freezing temperatures good.
-        Noisy temperature value ${body.value} for room ${body.key}
-        in floorplan ${name}
-      `) :
-      undefined
-    )
     .then(() => FloorPlan.findOne({ floorPlanName: name }))
     .then(foundFloorPlan => {
       if (!foundFloorPlan) {

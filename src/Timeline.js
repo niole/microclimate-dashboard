@@ -41,7 +41,7 @@ const Timeline = ({
   return (
     <LineChart width={500} height={300} data={eventsBySeries}>
       <Tooltip />
-      <XAxis dataKey="createdAt"/>
+      <XAxis dataKey="name"/>
       <YAxis type="number" domain={['dataMin', 'dataMax']} />
       <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
       {Object.values(zones).map((zone, i) => (

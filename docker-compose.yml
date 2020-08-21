@@ -15,6 +15,6 @@ services:
       - MONGO_INITDB_DATABASE=climate
     build:
       context: .
-      dockerfile: mongo.dock
+      dockerfile: mongo.dock.prod
 volumes:
   logvolume01: {}

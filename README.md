@@ -4,23 +4,11 @@ Monitor the microclimates in your aparment in real time.
 
 # How-To-Run
 
-## start mongo (dev/prod)
+## start mongo dev
 
-1.
 ```sh
-docker run -p 27017:27017 mongo:latest
-```
-
-2.
-```sh
-docker exec -it <container-id> mongo
-```
-3. put your floorplan in the data base
-```sh
-db.floorplans.insert({
-  roomNames: ["apte-livingroom", "apte-bathroom", "apte-bedroom", "apte-kitchen"],
-  floorPlanName: "apte"
-})
+docker build -t devmongo . -f mongo.dock.dev
+docker run -p 27017:27017 devmongo:latest
 ```
 
 ## start web app in dev
